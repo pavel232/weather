@@ -171,7 +171,7 @@ async function getLinkToImage(description) {
 
 // load weather information from 'http://api.openweathermap.org/'
 async function getWeather() {
-  const url = `http://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&lang=en&units=metric&APPID=03002feb4716ae6a2619917df860988c`;
+  const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&lang=en&units=metric&APPID=03002feb4716ae6a2619917df860988c`;
 
   try {
     return await fetch(url).then((res) => res.json()).then((data) => data);
