@@ -51,6 +51,19 @@ function setDays() {
   document.getElementById('day3').innerHTML = langStream[`${day3}Full`];
 }
 
+
+// get weather id codes
+function getWeatherId(id) {
+  const idFirstLetter = id.toString().slice(1, 0);
+  if (idFirstLetter === 2) {
+    return '2xx';
+  } if (idFirstLetter === 3) {
+    return '3xx';
+  }
+  return +id;
+}
+
+
 // change language
 async function setLanguage(mode) {
   let languageFile;
@@ -91,18 +104,6 @@ function setBackground(link) {
   if (typeof link !== 'undefined') {
     background.style.backgroundImage = `url(${link})`;
   } else alert('Failed to load background image');
-}
-
-
-// get weather id codes
-function getWeatherId(id) {
-  const idFirstLetter = id.toString().slice(1, 0);
-  if (idFirstLetter === 2) {
-    return '2xx';
-  } if (idFirstLetter === 3) {
-    return '3xx';
-  }
-  return +id;
 }
 
 
@@ -291,6 +292,14 @@ search.addEventListener('mousedown', () => {
   if (!document.getElementById('cityQuery').value) {
     alert(langStream.emptyCity);
   } else getLocation();
+});
+
+city.addEventListener('keypress', (event) => {
+  if (event.code === 'Enter') {
+    if (!document.getElementById('cityQuery').value) {
+      alert(langStream.emptyCity);
+    } else getLocation();
+  }
 });
 
 refresh.addEventListener('mousedown', () => refreshWeather());
