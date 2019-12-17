@@ -1,6 +1,8 @@
 const htmlInterface = `<header class="header">
 <div class="settings-block">
-    <div id="refresh" class="settings-block__refresh"></div>
+    <div id="refresh" class="settings-block__refresh">
+        <img class="refresh__arrows" src="./images/refresh.svg">
+    </div>
     <div class="settings-block__settings-container">
         <div class="settings-block__language">
             <div id="en" class="settings-block__language--button active">EN</div>
