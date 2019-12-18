@@ -170,10 +170,10 @@ async function refreshWeather() {
   day3Temp.innerHTML = `${setUnits(midDay[3].main.temp, 'set')}°`;
 
   const { icon } = weatherObject.list[0].weather[0];
-  const iconUrl = `http://openweathermap.org/img/wn/${icon}@2x.png`;
-  const iconUrlDay1 = `http://openweathermap.org/img/wn/${midDay[1].weather[0].icon}@2x.png`;
-  const iconUrlDay2 = `http://openweathermap.org/img/wn/${midDay[2].weather[0].icon}@2x.png`;
-  const iconUrlDay3 = `http://openweathermap.org/img/wn/${midDay[3].weather[0].icon}@2x.png`;
+  const iconUrl = `https://openweathermap.org/img/wn/${icon}@2x.png`;
+  const iconUrlDay1 = `https://openweathermap.org/img/wn/${midDay[1].weather[0].icon}@2x.png`;
+  const iconUrlDay2 = `https://openweathermap.org/img/wn/${midDay[2].weather[0].icon}@2x.png`;
+  const iconUrlDay3 = `https://openweathermap.org/img/wn/${midDay[3].weather[0].icon}@2x.png`;
   document.getElementById('iconToday').src = iconUrl;
   document.getElementById('day1Icon').src = iconUrlDay1;
   document.getElementById('day2Icon').src = iconUrlDay2;
