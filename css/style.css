@@ -161,23 +161,24 @@ nav a {
   width: 100%;
   max-width: 50vw; }
 
-.place__city {
-  font-family: Montserrat, "Trebuchet MS", sans-serif;
-  font-style: normal;
-  font-weight: bold;
-  font-size: 2.5vw;
-  line-height: 2.7vw;
-  text-transform: uppercase;
-  color: #FFFFFF; }
-
-.place__date {
-  margin-top: 5px;
-  font-family: Montserrat, "Trebuchet MS", sans-serif;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 1.8vw;
-  line-height: 2vw;
-  color: #FFFFFF; }
+.place {
+  margin-bottom: 30px; }
+  .place__city {
+    font-family: Montserrat, "Trebuchet MS", sans-serif;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 2.5vw;
+    line-height: 2.7vw;
+    text-transform: uppercase;
+    color: #FFFFFF; }
+  .place__date {
+    margin-top: 5px;
+    font-family: Montserrat, "Trebuchet MS", sans-serif;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 1.8vw;
+    line-height: 2vw;
+    color: #FFFFFF; }
 
 .today {
   display: flex;

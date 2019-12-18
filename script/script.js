@@ -5,9 +5,12 @@ import {
   latitudeElement, longitudeElement,
 } from './variables.js';
 
+import {
+  getPlace, getWeather, getLinkToImage,
+} from './requests.js';
 
-let weatherObject;
-let weatherDescription;
+
+let weatherId;
 let lang = 'en';
 let langStream;
 let units = 'celsius';
@@ -15,7 +18,6 @@ let latitude = 0;
 let longitude = 0;
 let myMap;
 let timeZone = 0;
-let weatherId;
 
 
 window.onload = () => {
@@ -37,6 +39,7 @@ function selectItem(form, item) {
     fahrenheit.className = 'settings-block__degrees--button';
     celsius.className = 'settings-block__degrees--button';
     item.className = 'settings-block__degrees--button active';
+    units = item.id;
   }
 }
 
@@ -163,51 +166,14 @@ setInterval(() => {
 }, 1000);
 
 
-// requests
-// load city image from 'https://source.unsplash.com/'
-async function getLinkToImage(description) {
-  const url = `https://api.unsplash.com/photos/random?query=${description}&client_id=658a67d9c97fa7ec1a24960dc7e837177c74d8d70cd84ae216e6619df6f93842`;
-
-  try {
-    return await fetch(url).then((res) => res.json()).then((data) => data.urls.regular);
-  } catch (ERROR) {
-    alert(`Failed to load background image, maybe the number of requests exceeded (50 per hour). Try it at the beginning of a new hour. Error code: ${error.message}`);
-  }
-}
-
-// load weather information from 'http://api.openweathermap.org/'
-async function getWeather() {
-  const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&lang=en&units=metric&APPID=03002feb4716ae6a2619917df860988c`;
-
-  try {
-    return await fetch(url).then((res) => res.json()).then((data) => data);
-  } catch (ERROR) {
-    alert('Failed to load weather information');
-  }
-}
-
-// load selected place information from 'https://geocode-maps.yandex.ru'
-async function getPlace(place) {
-  const url = `https://geocode-maps.yandex.ru/1.x/?format=json&apikey=af0dbd6a-6887-43bb-8160-57e861593da4&geocode=${place}&lang=${lang}`;
-
-  try {
-    return await fetch(url).then((response) => response.json())
-      .then((data) => data.response.GeoObjectCollection.featureMember[0].GeoObject);
-  } catch (ERROR) {
-    alert('Please input correct city name');
-  }
-}
-
-
 // get weather information
 async function refreshWeather() {
-  weatherObject = await getWeather();
-  weatherDescription = weatherObject.list[0].weather[0].description;
+  const weatherObject = await getWeather(latitude, longitude);
+  const weatherDescription = weatherObject.list[0].weather[0].description;
   weatherId = weatherObject.list[0].weather[0].id;
+  const midDay = weatherObject.list.filter((reading) => reading.dt_txt.includes('12:00:00'));
 
   timeZone = weatherObject.city.timezone / 3600;
-
-  const midDay = weatherObject.list.filter((reading) => reading.dt_txt.includes('12:00:00'));
 
   const { temp } = weatherObject.list[0].main;
   currentTemp.innerHTML = `${setUnits(temp, 'set')}°`;
@@ -233,10 +199,9 @@ async function refreshWeather() {
   windValue.innerHTML = `<pre> ${windUpd} </pre>`;
   humidityValue.innerHTML = `<pre> ${humidityUpd}%</pre>`;
 
-  setDays();
-
   const link = await getLinkToImage(weatherDescription);
   setBackground(link);
+  setDays();
 }
 
 
@@ -244,8 +209,8 @@ async function refreshWeather() {
 async function getLocation(mode) {
   let place;
   if (!city.value) {
-    place = await getPlace(`${longitude},${latitude}`);
-  } else place = await getPlace(city.value);
+    place = await getPlace(`${longitude},${latitude}`, lang);
+  } else place = await getPlace(city.value, lang);
 
   const placeCountry = place.metaDataProperty.GeocoderMetaData.Address.Components.filter((reading) => reading.kind.includes('country'))[0];
   const placeCityName = place.metaDataProperty.GeocoderMetaData.Address.Components.filter((reading) => reading.kind.includes('locality'))[0];
@@ -258,9 +223,10 @@ async function getLocation(mode) {
 
   if (mode !== 'updateCity') {
     refreshCoordinates(place.Point.pos.split(' ')[1], place.Point.pos.split(' ')[0]);
-    refreshWeather();
     myMap.setCenter([latitude, longitude], 11);
+    refreshWeather();
   }
+
   document.getElementById('currentCity').innerHTML = currentCity;
 }
 
@@ -282,14 +248,12 @@ be.addEventListener('mousedown', () => {
 fahrenheit.addEventListener('mousedown', () => {
   if (units !== 'fahrenheit') {
     selectItem('degrees', fahrenheit);
-    units = 'fahrenheit';
     setUnits(0, 'change');
   }
 });
 celsius.addEventListener('mousedown', () => {
   if (units !== 'celsius') {
     selectItem('degrees', celsius);
-    units = 'celsius';
     setUnits(0, 'change');
   }
 });
@@ -342,12 +306,8 @@ function localStorageSave() {
 async function localStorageLoad() {
   if (localStorage.getItem('Units') === 'celsius') {
     selectItem('degrees', celsius);
-    units = 'celsius';
-    setUnits(0, 'change');
   } else if (localStorage.getItem('Units') === 'fahrenheit') {
     selectItem('degrees', fahrenheit);
-    units = 'fahrenheit';
-    setUnits(0, 'change');
   }
 
   if (localStorage.getItem('Language') === 'en') {
