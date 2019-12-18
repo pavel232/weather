@@ -154,18 +154,6 @@ function setUnits(value, mode) {
 }
 
 
-// get date and time from current place
-setInterval(() => {
-  let date = new Date();
-  date.setDate(date.getUTCDate());
-  date.setHours(date.getUTCHours() + timeZone);
-  const time = date.toTimeString().slice(0, 5);
-  date = `${langStream[date.toDateString().slice(0, 3).toLowerCase()]} ${date.getDate()} ${langStream[date.getMonth()]} ${date.getFullYear()}`;
-  date = `<pre>${date}     ${time}</pre>`;
-  document.getElementById('date').innerHTML = date;
-}, 1000);
-
-
 // get weather information
 async function refreshWeather() {
   const weatherObject = await getWeather(latitude, longitude);
@@ -325,3 +313,15 @@ async function localStorageLoad() {
 window.addEventListener('beforeunload', () => {
   localStorageSave();
 });
+
+
+// get date and time from current place
+setInterval(() => {
+  let date = new Date();
+  date.setDate(date.getUTCDate());
+  date.setHours(date.getUTCHours() + timeZone);
+  const time = date.toTimeString().slice(0, 5);
+  date = `${langStream[date.toDateString().slice(0, 3).toLowerCase()]} ${date.getDate()} ${langStream[date.getMonth()]} ${date.getFullYear()}`;
+  date = `<pre>${date}     ${time}</pre>`;
+  document.getElementById('date').innerHTML = date;
+}, 1000);
