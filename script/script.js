@@ -6,7 +6,7 @@ import {
 } from './variables.js';
 
 import {
-  getPlace, getWeather, getLinkToImage,
+  getPlace, getWeather, getBackgroundUrl,
 } from './requests.js';
 
 
@@ -18,12 +18,6 @@ let latitude = 0;
 let longitude = 0;
 let myMap;
 let timeZone = 0;
-
-
-window.onload = () => {
-  navigator.geolocation.getCurrentPosition(success, error);
-  localStorageLoad();
-};
 
 
 // select settings items
@@ -86,21 +80,25 @@ async function setLanguage(mode) {
     case 'be':
       languageFile = './languages/belorussian.json';
       break;
+    default:
+      languageFile = './languages/russian.json';
   }
 
   await fetch(languageFile)
     .then((res) => res.json())
-    .then((data) => { langStream = data; });
+    .then((data) => {
+      langStream = data;
+      feelsLike.innerHTML = langStream.feelsLike;
+      wind.innerHTML = langStream.wind;
+      windUnits.innerHTML = langStream.units;
+      humidity.innerHTML = langStream.humidity;
+      latitudeElement.innerHTML = langStream.lat;
+      longitudeElement.innerHTML = langStream.lon;
+      city.placeholder = langStream.searchPlaceholder;
+      search.innerHTML = langStream.searchButton;
+      precipitation.innerHTML = (weatherId === undefined) ? '' : langStream.weatherId[getWeatherId(weatherId)];
+    });
 
-  feelsLike.innerHTML = langStream.feelsLike;
-  wind.innerHTML = langStream.wind;
-  windUnits.innerHTML = langStream.units;
-  humidity.innerHTML = langStream.humidity;
-  latitudeElement.innerHTML = langStream.lat;
-  longitudeElement.innerHTML = langStream.lon;
-  city.placeholder = langStream.searchPlaceholder;
-  search.innerHTML = langStream.searchButton;
-  precipitation.innerHTML = (weatherId === undefined) ? '' : langStream.weatherId[getWeatherId(weatherId)];
   setDays();
   if (mode !== 'withoutUpdateCity') {
     getLocation('updateCity');
@@ -109,10 +107,13 @@ async function setLanguage(mode) {
 
 
 // set background image from url image
-function setBackground(link) {
-  if (typeof link !== 'undefined') {
-    background.style.backgroundImage = `url(${link})`;
-  } else alert('Failed to load background image');
+async function setBackground(description) {
+  getBackgroundUrl(description)
+    .then((data) => {
+      background.style.backgroundImage = `url(${data.urls.regular})`;
+    })
+    .catch((err) => alert(`Failed to load background image, maybe the number of requests exceeded (50 per hour).
+    Try it at the beginning of a new hour. Error code: ${err}`));
 }
 
 
@@ -156,40 +157,43 @@ function setUnits(value, mode) {
 
 // get weather information
 async function refreshWeather() {
-  const weatherObject = await getWeather(latitude, longitude);
-  const weatherDescription = weatherObject.list[0].weather[0].description;
-  weatherId = weatherObject.list[0].weather[0].id;
-  const midDay = weatherObject.list.filter((reading) => reading.dt_txt.includes('12:00:00'));
+  getWeather(latitude, longitude)
+    .then((data) => {
+      const weatherObject = data;
+      const weatherDescription = weatherObject.list[0].weather[0].description;
+      weatherId = weatherObject.list[0].weather[0].id;
+      const midDay = weatherObject.list.filter((reading) => reading.dt_txt.includes('12:00:00'));
 
-  timeZone = weatherObject.city.timezone / 3600;
+      timeZone = weatherObject.city.timezone / 3600;
 
-  const { temp } = weatherObject.list[0].main;
-  currentTemp.innerHTML = `${setUnits(temp, 'set')}°`;
-  day1Temp.innerHTML = `${setUnits(midDay[1].main.temp, 'set')}°`;
-  day2Temp.innerHTML = `${setUnits(midDay[2].main.temp, 'set')}°`;
-  day3Temp.innerHTML = `${setUnits(midDay[3].main.temp, 'set')}°`;
+      const { temp } = weatherObject.list[0].main;
+      currentTemp.innerHTML = `${setUnits(temp, 'set')}°`;
+      day1Temp.innerHTML = `${setUnits(midDay[1].main.temp, 'set')}°`;
+      day2Temp.innerHTML = `${setUnits(midDay[2].main.temp, 'set')}°`;
+      day3Temp.innerHTML = `${setUnits(midDay[3].main.temp, 'set')}°`;
 
-  const { icon } = weatherObject.list[0].weather[0];
-  const iconUrl = `https://openweathermap.org/img/wn/${icon}@2x.png`;
-  const iconUrlDay1 = `https://openweathermap.org/img/wn/${midDay[1].weather[0].icon}@2x.png`;
-  const iconUrlDay2 = `https://openweathermap.org/img/wn/${midDay[2].weather[0].icon}@2x.png`;
-  const iconUrlDay3 = `https://openweathermap.org/img/wn/${midDay[3].weather[0].icon}@2x.png`;
-  document.getElementById('iconToday').src = iconUrl;
-  document.getElementById('day1Icon').src = iconUrlDay1;
-  document.getElementById('day2Icon').src = iconUrlDay2;
-  document.getElementById('day3Icon').src = iconUrlDay3;
+      const { icon } = weatherObject.list[0].weather[0];
+      const iconUrl = `https://openweathermap.org/img/wn/${icon}@2x.png`;
+      const iconUrlDay1 = `https://openweathermap.org/img/wn/${midDay[1].weather[0].icon}@2x.png`;
+      const iconUrlDay2 = `https://openweathermap.org/img/wn/${midDay[2].weather[0].icon}@2x.png`;
+      const iconUrlDay3 = `https://openweathermap.org/img/wn/${midDay[3].weather[0].icon}@2x.png`;
+      document.getElementById('iconToday').src = iconUrl;
+      document.getElementById('day1Icon').src = iconUrlDay1;
+      document.getElementById('day2Icon').src = iconUrlDay2;
+      document.getElementById('day3Icon').src = iconUrlDay3;
 
-  const windUpd = weatherObject.list[0].wind.speed;
-  const humidityUpd = weatherObject.list[0].main.humidity;
-  const feelsLikeUpd = weatherObject.list[0].main.feels_like;
-  precipitation.innerHTML = langStream.weatherId[getWeatherId(weatherId)];
-  feelsLikeValue.innerHTML = `<pre> ${setUnits(feelsLikeUpd, 'set')}°</pre>`;
-  windValue.innerHTML = `<pre> ${windUpd} </pre>`;
-  humidityValue.innerHTML = `<pre> ${humidityUpd}%</pre>`;
+      const windUpd = weatherObject.list[0].wind.speed;
+      const humidityUpd = weatherObject.list[0].main.humidity;
+      const feelsLikeUpd = weatherObject.list[0].main.feels_like;
+      precipitation.innerHTML = langStream.weatherId[getWeatherId(weatherId)];
+      feelsLikeValue.innerHTML = `<pre> ${setUnits(feelsLikeUpd, 'set')}°</pre>`;
+      windValue.innerHTML = `<pre> ${windUpd} </pre>`;
+      humidityValue.innerHTML = `<pre> ${humidityUpd}%</pre>`;
 
-  const link = await getLinkToImage(weatherDescription);
-  setBackground(link);
-  setDays();
+      setBackground(weatherDescription);
+      setDays();
+    })
+    .catch((err) => alert(`Failed to load weather information.\n ${err}`));
 }
 
 
@@ -320,6 +324,11 @@ async function localStorageLoad() {
 window.addEventListener('beforeunload', () => {
   localStorageSave();
 });
+
+window.onload = () => {
+  navigator.geolocation.getCurrentPosition(success, error);
+  localStorageLoad();
+};
 
 
 // get date and time from current place
