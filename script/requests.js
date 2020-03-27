@@ -24,7 +24,8 @@ export async function getPlace(place, lang) {
   const url = `https://geocode-maps.yandex.ru/1.x/?format=json&apikey=af0dbd6a-6887-43bb-8160-57e861593da4&geocode=${place}&lang=${lang}`;
 
   try {
-    return await fetch(url).then((response) => response.json())
+    return await fetch(url)
+      .then((response) => response.json())
       .then((data) => data.response.GeoObjectCollection.featureMember[0].GeoObject);
   } catch (ERROR) {
     alert('Please input correct city name');

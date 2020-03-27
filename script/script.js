@@ -55,9 +55,9 @@ function setDays() {
   days.setHours(days.getHours() + 24);
   const day3 = days.toString().toLowerCase().slice(0, 3);
 
-  document.getElementById('day1').innerHTML = langStream[`${day1}Full`];
-  document.getElementById('day2').innerHTML = langStream[`${day2}Full`];
-  document.getElementById('day3').innerHTML = langStream[`${day3}Full`];
+  document.getElementById('day1').innerHTML = langStream[`${day1}Full`] ? langStream[`${day1}Full`] : 'day1';
+  document.getElementById('day2').innerHTML = langStream[`${day2}Full`] ? langStream[`${day2}Full`] : 'day2';
+  document.getElementById('day3').innerHTML = langStream[`${day3}Full`] ? langStream[`${day3}Full`] : 'day3';
 }
 
 
@@ -200,22 +200,26 @@ async function getLocation(mode) {
     place = await getPlace(`${longitude},${latitude}`, lang);
   } else place = await getPlace(city.value, lang);
 
-  const placeCountry = place.metaDataProperty.GeocoderMetaData.Address.Components.filter((reading) => reading.kind.includes('country'))[0];
-  const placeCityName = place.metaDataProperty.GeocoderMetaData.Address.Components.filter((reading) => reading.kind.includes('locality'))[0];
-  let currentCity;
-  if (placeCityName !== undefined) {
-    currentCity = `${placeCityName.name}, ${placeCountry.name}`;
-  } else {
-    currentCity = `${place.name}, ${placeCountry.name}`;
-  }
+  if (place) {
+    const placeCountry = place.metaDataProperty.GeocoderMetaData.Address.Components
+      .filter((reading) => reading.kind.includes('country'))[0];
+    const placeCityName = place.metaDataProperty.GeocoderMetaData.Address.Components
+      .filter((reading) => reading.kind.includes('locality'))[0];
 
-  if (mode !== 'updateCity') {
-    refreshCoordinates(place.Point.pos.split(' ')[1], place.Point.pos.split(' ')[0]);
-    myMap.setCenter([latitude, longitude], 11);
-    refreshWeather();
-  }
+    let currentCity;
+    if (placeCityName !== undefined) {
+      currentCity = `${placeCityName.name}, ${placeCountry.name}`;
+    } else {
+      currentCity = `${place.name}, ${placeCountry.name}`;
+    }
 
-  document.getElementById('currentCity').innerHTML = currentCity;
+    if (mode !== 'updateCity') {
+      refreshCoordinates(place.Point.pos.split(' ')[1], place.Point.pos.split(' ')[0]);
+      myMap.setCenter([latitude, longitude], 11);
+      refreshWeather();
+    }
+    document.getElementById('currentCity').innerHTML = currentCity;
+  }
 }
 
 
@@ -269,7 +273,10 @@ function init() {
     center: [latitude, longitude],
     zoom: 11,
   });
+  let myPlacemark = new ymaps.Placemark([latitude, longitude]);
+  myMap.geoObjects.add(myPlacemark);
 }
+
 ymaps.ready(init);
 
 
