@@ -20,13 +20,6 @@ https://pavel232.github.io/weather/
 
 *В предложенный макет можно вносить свои изменения с целью его улучшения, не удаляя и не упрощая представленные на макете элементы дизайна*
 
-### Примеры работ
-- https://deadline2020-fancy-weather.netlify.com/
-- https://fancy-weather-lhk.surge.sh/
-- https://chakapega-fancy-weather.netlify.com/
-- https://my-fancy-weather.netlify.com/
-- https://fancy-weather-react.netlify.com/
-
 ### Описание функциональных блоков
 
 **1. Блок контроля**
