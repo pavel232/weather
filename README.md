@@ -2,10 +2,6 @@
 task fancy weather deploy
 https://pavel232.github.io/weather/
 
-| Deadline | Folder name | Branch name |
-| ----------- | ------------- | ------------- |
-| 15.12.2019 23:59 | fancy-weather | fancy-weather |
-
 
 ## Задание
 
