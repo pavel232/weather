@@ -16,7 +16,6 @@ https://pavel232.github.io/weather/
 - Геолокационные данные
 
 Макет приложения:
-![Screenshot](images/fancy-weather.png)
 [Макет в Figma](https://www.figma.com/file/3aQwTNcZWg5CTuvlQ1t5MQ/fancy-weather?node-id=0%3A1)
 
 *В предложенный макет можно вносить свои изменения с целью его улучшения, не удаляя и не упрощая представленные на макете элементы дизайна*
