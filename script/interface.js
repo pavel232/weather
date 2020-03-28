@@ -5,8 +5,8 @@ const htmlInterface = `<header class="header">
     </div>
     <div class="settings-block__settings-container">
         <div class="settings-block__language">
-            <div id="en" class="settings-block__language--button">EN</div>
             <div id="ru" class="settings-block__language--button">RU</div>
+            <div id="en" class="settings-block__language--button">EN</div>
             <div id="be" class="settings-block__language--button">BE</div>
         </div>
         <div class="settings-block__degrees">
