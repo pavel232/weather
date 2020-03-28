@@ -5,13 +5,13 @@ const htmlInterface = `<header class="header">
     </div>
     <div class="settings-block__settings-container">
         <div class="settings-block__language">
-            <div id="en" class="settings-block__language--button active">EN</div>
+            <div id="en" class="settings-block__language--button">EN</div>
             <div id="ru" class="settings-block__language--button">RU</div>
             <div id="be" class="settings-block__language--button">BE</div>
         </div>
         <div class="settings-block__degrees">
             <div id="fahrenheit" class="settings-block__degrees--button">°F</div>
-            <div id="celsius" class="settings-block__degrees--button active">°С</div>
+            <div id="celsius" class="settings-block__degrees--button">°С</div>
         </div>
     </div>
 </div>

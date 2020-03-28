@@ -11,7 +11,7 @@ import {
 
 
 let weatherId;
-let lang = 'en';
+let lang = 'ru';
 let langStream;
 let units = 'celsius';
 let latitude = 0;
@@ -93,7 +93,7 @@ async function setLanguage(mode) {
       longitudeElement.innerHTML = langStream.lon;
       city.placeholder = langStream.searchPlaceholder;
       search.innerHTML = langStream.searchButton;
-      precipitation.innerHTML = (weatherId === undefined) ? '' : langStream.weatherId[getWeatherId(weatherId)];
+      precipitation.innerHTML = (weatherId) ? langStream.weatherId[getWeatherId(weatherId)] : '';
     });
 
   setDays();
@@ -299,21 +299,26 @@ function localStorageSave() {
 }
 
 async function localStorageLoad() {
-  if (localStorage.getItem('Units') === 'celsius') {
-    selectItem('degrees', celsius);
-  } else if (localStorage.getItem('Units') === 'fahrenheit') {
-    selectItem('degrees', fahrenheit);
+  switch (localStorage.getItem('Units')) {
+    case 'fahrenheit':
+      selectItem('degrees', fahrenheit);
+      break;
+    default:
+      selectItem('degrees', celsius);
   }
 
-  if (localStorage.getItem('Language') === 'en') {
-    selectItem('language', en);
-    await setLanguage('withoutUpdateCity');
-  } else if (localStorage.getItem('Language') === 'ru') {
-    selectItem('language', ru);
-    await setLanguage('withoutUpdateCity');
-  } else if (localStorage.getItem('Language') === 'be') {
-    selectItem('language', be);
-    await setLanguage('withoutUpdateCity');
+  switch (localStorage.getItem('Language')) {
+    case 'en':
+      selectItem('language', en);
+      await setLanguage('withoutUpdateCity');
+      break;
+    case 'be':
+      selectItem('language', be);
+      await setLanguage('withoutUpdateCity');
+      break;
+    default:
+      selectItem('language', ru);
+      await setLanguage('withoutUpdateCity');
   }
 }
 
