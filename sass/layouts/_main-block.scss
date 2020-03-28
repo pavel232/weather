@@ -127,6 +127,8 @@ $font-default: Montserrat, 'Trebuchet MS', sans-serif;
     flex-direction: column;
     align-items: flex-end;
     margin-bottom: 30px;
+    border-radius: 5px;
+    overflow: hidden;
 
     &__draw {
         width: 25vw;
@@ -224,7 +226,7 @@ $font-default: Montserrat, 'Trebuchet MS', sans-serif;
         margin-top: 10px;
 
         &__draw {
-            width: 65vw;
+            width: 95vw;
             height: 65vw;
         }
         &__coordinates {

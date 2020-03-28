@@ -141,7 +141,6 @@ $font-default: Montserrat, 'Trebuchet MS', sans-serif;
 		justify-content: center;
 		align-items: center;
 		width: 30%;
-		height: 44px;
 		font-family: $font-default;
 		font-style: normal;
 		font-weight: bold;
@@ -186,6 +185,10 @@ nav {
 }
 
 @media screen and (max-width: 768px) {
+
+	.header {
+		padding-top: 7px;
+	}
 	
 	.settings-block {
 		max-width: 100%;
@@ -194,5 +197,6 @@ nav {
 
 	.search-block {
 		width: 100%;
+		height: 34px;
 	}
 }

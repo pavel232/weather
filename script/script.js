@@ -72,16 +72,13 @@ async function setLanguage(mode) {
   let languageFile;
   switch (lang) {
     case 'en':
-      languageFile = './languages/english.json';
-      break;
-    case 'ru':
-      languageFile = './languages/russian.json';
+      languageFile = './languages/en.json';
       break;
     case 'be':
-      languageFile = './languages/belorussian.json';
+      languageFile = './languages/be.json';
       break;
     default:
-      languageFile = './languages/russian.json';
+      languageFile = './languages/ru.json';
   }
 
   await fetch(languageFile)
@@ -277,10 +274,9 @@ function init() {
     center: [latitude, longitude],
     zoom: 11,
   });
-  let myPlacemark = new ymaps.Placemark([latitude, longitude]);
+  const myPlacemark = new ymaps.Placemark([latitude, longitude]);
   myMap.geoObjects.add(myPlacemark);
 }
-
 ymaps.ready(init);
 
 
